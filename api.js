@@ -27,6 +27,7 @@
             this.GetDetails = _getDetails;
             this.Post = _post;
             this.Upload = _upload;
+            this.UploadDelete = _uploadDelete;
             this.Put = _put;
             this.Delete = _delete;
             this.DataItem = _dataitem;
@@ -35,7 +36,6 @@
             this.GetDataCustomPlus = _getDataCustomPlus;
             this.GetMoreResource = _getMoreResource;
             this.UriResource = new Uri.resourse(o);
-
 
             var self = this;
 
@@ -53,23 +53,6 @@
                 return $http
                     .post(self.Url, self.Data)
                     .then(handleSuccess, handleError);
-            }
-
-            function _upload() {
-
-                ShowLoading();
-
-                self.LastAction = "upload";
-
-                self.UriResource.Filter = self.Filter
-                self.UriResource.EndPoint = self.EndPoint
-                self.Url = self.UriResource.makeEndPoint() + "document/Upload";
-
-                $http.post(self.Url, self.Data,
-                {
-                    headers: { 'Content-Type': undefined },
-                    transformRequest: angular.identity
-                }).then(handleSuccess, handleError);
             }
 
             function _put() {
@@ -93,7 +76,6 @@
                 ShowLoading();
 
                 self.LastAction = "delete";
-
 
                 self.UriResource.Filter = self.Filter
                 self.UriResource.EndPoint = self.EndPoint
@@ -121,6 +103,39 @@
                     .get(self.Url)
                     .then(handleSuccess, handleError);
             }
+
+            function _uploadDelete() {
+
+                ShowLoading();
+
+                self.LastAction = "uploadDelete";
+
+                self.UriResource.Filter = self.Filter
+                self.UriResource.EndPoint = self.EndPoint
+                self.Url = self.UriResource.MakeDeleteUploadBaseUrl();
+
+                return $http
+                    .delete(self.Url)
+                    .then(handleSuccess, handleError);
+            }
+
+            function _upload() {
+
+                ShowLoading();
+
+                self.LastAction = "upload";
+
+                self.UriResource.Filter = self.Filter
+                self.UriResource.EndPoint = self.EndPoint
+                self.Url = self.UriResource.MakeEndPointUpload();
+
+                $http.post(self.Url, self.Data,
+                    {
+                        headers: { 'Content-Type': undefined },
+                        transformRequest: angular.identity
+                    }).then(handleSuccess, handleError);
+            }
+
 
             function _getDataListCustom() {
                 return _getMoreResource("GetDataListCustom");

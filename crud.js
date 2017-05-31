@@ -4,9 +4,9 @@
     angular.module('common.utils')
         .service('Crud', Crud);
 
-    Crud.$inject = ['Api', '$uibModal', '$location', '$window', 'XlsExport', '$timeout'];
+    Crud.$inject = ['Api', 'endpoints', '$uibModal', '$location', '$window', 'XlsExport', '$timeout',];
 
-    function Crud(Api, $uibModal, $location, $window, XlsExport, $timeout) {
+    function Crud(Api, endpoints, $uibModal, $location, $window, XlsExport, $timeout) {
 
         var init = function () {
 
@@ -38,7 +38,10 @@
                 },
                 Upload: {
                     Folder: "upload",
-                    CallBack: function (model, result) {
+                    CallBackUpload: function (model, result) {
+
+                    },
+                    CallBackDelete: function (model, result) {
 
                     },
                 },
@@ -468,7 +471,26 @@
                     self.ApiResource.Data = model;
 
                     self.ApiResource.SuccessHandle = function (data) {
-                        Notification.success({ message: msg, title: "Sucesso" })
+
+                        console.log(data);
+
+                        if (data.result != null) {
+                            if (data.result.isValid) {
+                                Notification.success({ message: data.result.message, title: "<i class='fa fa-check-square'> Sucesso" })
+                            }
+                        }
+
+                        if (data.warning != null) {
+                            if (!data.warning.isValid) {
+                                for (var i = 0; i < data.warning.warnings.length; i++) {
+                                    Notification.warning({ message: data.warning.warnings[i], positionY: 'bottom', title: "<i class='fa fa-warning'> Atenção" })
+                                }
+                            }
+                        }
+                        else {
+                            Notification.success({ message: msg, title: "Sucesso" })
+                        }
+
                         actionEnd(model);
                         _load(self.LastFilters);
                     };
@@ -485,13 +507,27 @@
                         actionEnd();
                 };
 
+                vm.delete = function (fileName, model) {
+
+                    var uploadConfig = self.GetConfigs().Upload
+                    self.ApiResource = new Api.resourse(self.GetConfigs().resource);
+                    self.ApiResource.Filter = {
+                        fileName: fileName,
+                        folder: uploadConfig.Folder
+                    };
+                    self.ApiResource.SuccessHandle = function (result) {
+
+                        uploadConfig.CallBackDelete(model, result);
+
+                    };
+                    self.ApiResource.EndPoint = self.GetConfigs().endPoint;
+                    self.ApiResource.UploadDelete();
+
+                };
+
                 vm.upload = function ($files, model) {
 
-                    console.log("CallBack 01", $files)
-
                     for (var i = 0; i < $files.length; i++) {
-
-                        
 
                         var $file = $files[i];
                         var fd = new FormData();
@@ -499,14 +535,13 @@
 
                         fd.append("files", $file);
                         fd.append("folder", uploadConfig.Folder);
-                        
+
 
                         self.ApiResource = new Api.resourse(self.GetConfigs().resource);
                         self.ApiResource.Data = fd;
                         self.ApiResource.SuccessHandle = function (result) {
 
-                            uploadConfig.CallBack(model, result);
-
+                            uploadConfig.CallBackUpload(model, result);
 
                         };
                         self.ApiResource.EndPoint = self.GetConfigs().endPoint;
@@ -544,6 +579,7 @@
                 vm.Model = model;
                 vm.Labels = labels;
                 vm.Attributes = attributes;
+                vm.uploadUri = endpoints.DEFAULT + "document/download/";
 
                 var subActionTitle = self.LastAction == "create" ? "Cadastro" : "Edição";
                 vm.ActionTitle = subActionTitle;

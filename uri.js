@@ -20,14 +20,16 @@
                 IsPaginate: true,
                 QueryOptimizerBehavior: "",
             };
-           
+
 
             this.QueryStringFilter = _queryStringFilter;
             this.MakeGetBaseUrl = _makeGetBaseUrl;
             this.MakeGetMoreResourceBaseUrl = _makeGetMoreResourceBaseUrl;
             this.MakeDeleteBaseUrl = _makeDeleteBaseUrl;
+            this.MakeDeleteUploadBaseUrl = _makeDeleteUploadBaseUrl;
             this.MakeUri = _makeUri;
-            this.makeEndPoint = _makeEndPoint;
+            this.MakeEndPoint = _makeEndPoint;
+            this.MakeEndPointUpload = _makeEndPointUpload;
 
             var self = this;
 
@@ -63,6 +65,10 @@
                 return String.format("{0}/?{1}", _makeUri(), $httpParamSerializer(self.Filter));
             }
 
+            function _makeDeleteUploadBaseUrl() {
+                return String.format("{0}document/Upload/{1}/{2}", _makeEndPoint(), self.Filter.folder, self.Filter.fileName);
+            }
+
             function _makeUri() {
 
                 return String.format("{0}/{1}", _makeEndPoint(), self.Resourse)
@@ -74,6 +80,11 @@
                     return endpoints.DEFAULT;
 
                 return endpoints[self.EndPoint];
+            }
+
+            function _makeEndPointUpload() {
+
+                return _makeEndPoint() + "document/Upload";
             }
 
             String.format = function () {
