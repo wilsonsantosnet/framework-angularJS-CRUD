@@ -284,9 +284,7 @@
                     for (var i = 0; i < data.dataList.length; i++) {
                         data.dataList[i].id = parseInt(data.dataList[i].id);
                     }
-
                     vm["DataItem" + attr.dataitem] = data.dataList;
-                    console.log("_configSelect", vm)
                     self.GetConfigs().LoadSelects.CallBack(vm["DataItem" + attr.dataitem], vm);
                 };
                 api.DataItem();
