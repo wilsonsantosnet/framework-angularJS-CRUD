@@ -35,20 +35,29 @@
 
             function _queryStringFilter(filterBehavior) {
 
-                if (self.Filter.OrderFields !== undefined) {
-                    self.Filter.IsOrderByDynamic = true;
-                    if (self.Filter.OrderByType === undefined)
-                        self.Filter.OrderByType = 1;
+
+                if (self.Filter !== undefined) {
+
+                    if (self.Filter.OrderFields !== undefined) {
+                        self.Filter.IsOrderByDynamic = true;
+                        if (self.Filter.OrderByType === undefined)
+                            self.Filter.OrderByType = 1;
+                    }
+
+                    if (filterBehavior !== undefined)
+                        self.Filter.FilterBehavior = filterBehavior;
                 }
 
-                if (filterBehavior !== undefined)
-                    self.Filter.FilterBehavior = filterBehavior;
+               
 
                 var filterMerged = $httpParamSerializer(angular.merge({}, self.DefaultFilter, self.Filter));
 
-                if (self.Filter.Id !== undefined)
-                    return String.format("{0}?{1}", self.Filter.Id, filterMerged);
+                if (self.Filter !== undefined) {
+                    if (self.Filter.Id !== undefined)
+                        return String.format("{0}?{1}", self.Filter.Id, filterMerged);
+                }
 
+               
                 return String.format("?{0}", filterMerged);
 
             }

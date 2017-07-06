@@ -269,6 +269,7 @@
 
             function _configSelect(attr, vm) {
 
+                
                 var api = new Api.resourse(attr.dataitem);
 
                 api.EnableLogs = false;
@@ -470,7 +471,6 @@
 
                     self.ApiResource.SuccessHandle = function (data) {
 
-                        console.log(data);
 
                         if (data.result != null) {
                             if (data.result.isValid) {
@@ -525,6 +525,8 @@
 
                 vm.upload = function ($files, model) {
 
+                   
+
                     for (var i = 0; i < $files.length; i++) {
 
                         var $file = $files[i];
@@ -538,6 +540,9 @@
                         self.ApiResource = new Api.resourse(self.GetConfigs().resource);
                         self.ApiResource.Data = fd;
                         self.ApiResource.SuccessHandle = function (result) {
+
+                            console.log("vm.upload SuccessHandle", model, result);
+                            console.log("vm.upload SuccessHandle", self.Config);
 
                             uploadConfig.CallBackUpload(model, result);
 
@@ -629,9 +634,9 @@
 
 
                 self.ApiResource = new Api.resourse(self.GetConfigs().resource);
-
                 model = self.GetConfigs().ChangeDataPost(model);
                 self.ApiResource.Data = model;
+                self.ApiResource.EnableLoading = false;
 
                 self.ApiResource.SuccessHandle = function (data) {
 

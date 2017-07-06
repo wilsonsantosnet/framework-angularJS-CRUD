@@ -240,6 +240,7 @@
             function ShowLoading() {
                 if (self.EnableLoading)
                     Loading.show();
+
             }
 
             function HideLoading() {

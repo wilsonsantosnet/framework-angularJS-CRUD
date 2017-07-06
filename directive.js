@@ -137,7 +137,7 @@
 
 
 
-        .directive('bindCustomValue', function () {
+        .directive('bindCustomValue', [ function () {
             return {
                 restrict: 'A',
                 template: function (elem, attr) {
@@ -181,12 +181,21 @@
                         html = "<make-label-Instance bind-property-name='" + attr.bindPropertyName + "' model='vm.Model." + attr.bindPropertyName + "' dataitem='" + attr.bindReletedClass + "'></make-label-Instance>";
                     }
 
+                    if (attr.bindCustomType == "textEditor") {
+                        html = "<div ng-bind-html='" + attr.bindCustomValue + "'></div>";
+                    }
+
+                    if (attr.bindCustomType == "time") {
+                        html = "{{" + attr.bindCustomValue + " | decimaToTime }}";
+                    }
+                    
+
                     elem.html(html)
                     
                     return elem[0][0];
                 },
             };
-        })
+        }])
 
         .directive('bindBoolValue', function ($compile) {
             return {
